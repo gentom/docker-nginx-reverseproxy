@@ -1,0 +1,40 @@
+version: '2'
+services:
+    # dbコンテナ
+    db:
+        image: mysql:latest
+        # DBのアカウント
+        environment:
+            MYSQL_DATABASE: sample_db
+            MYSQL_USER: sample
+            MYSQL_PASSWORD: sample_password
+            MYSQL_ROOT_PASSWORD: root
+
+    # webコンテナ
+    web:
+        image: nginx:latest
+        # パスをボリュームとしてマウント {ホスト側:コンテナ側}
+        volumes:
+            - ./web:/usr/share/nginx/html
+        ports:
+            - 80
+
+    # apiコンテナ
+    api:
+        build: ./api
+        # リンク先コンテナ {コンテナ名:エイリアス名}
+        links:
+            - db:db-server
+        ports:
+            - 80
+
+    # リバースプロキシコンテナ
+    proxy:
+        build: ./proxy
+        # リンク先コンテナに振り分けるコンテナを設定 {コンテナ名:エイリアス名}
+        links:
+            - web:web
+            - api:api
+        ports:
+            - 80:80
+        tty: true
