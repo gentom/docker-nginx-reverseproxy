@@ -5,7 +5,7 @@ services:
         image: nginx:latest
         # パスをボリュームとしてマウント {ホスト側:コンテナ側}
         volumes:
-            - ./web:/usr/share/nginx/html
+            - ./web/:/usr/share/nginx/html/
         ports:
             - 80
 
@@ -23,5 +23,7 @@ services:
             - web:web
             - api:api
         ports:
-            - 80:80
+            - 8000:80
         tty: true
+
+# Default.conf を消す
